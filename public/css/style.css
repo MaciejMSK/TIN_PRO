@@ -1,0 +1,60 @@
+body {
+    background-color: darkgrey;
+    color: wheat;
+    margin-left: 20px;
+}
+
+.dodaj {
+    color: white; 
+    background-color: #006632;
+    border-radius: 8px;
+}
+
+.navi {
+    color: white; 
+    background-color: #09078f;
+    border-radius: 8px;
+    float: left;
+}
+
+.usun {
+    color: white; 
+    background-color: #911c1b;
+    border-radius: 8px;
+}
+
+.zakoncz {
+    color: white; 
+    background-color: #e48d1c;
+    border-radius: 8px;
+}
+
+#head {
+    font-size: 30px; 
+    color: darkgreen;
+}
+
+#task {
+    font-size: 20px;
+    color: rgb(49, 49, 49);
+}
+.taskItem {
+    border-style: outset;
+    background-color: rgb(192, 191, 191);
+    border-radius: 25px;
+    border-spacing: 15px 30px;
+    padding: 20px;
+    width: 350px;
+}
+
+.data {
+    font-size: 6;
+}
+
+.true {
+    text-decoration: line-through;
+}
+
+div .p2 {
+    color: black;
+}

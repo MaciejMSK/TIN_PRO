@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+    <head>
+        <title>formularz</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="formularz">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/css/style.css" rel="stylesheet" type="text/css">
+
+    </head>
+    <body>
+
+
+        <header>  
+            <form method="get" action="/login">
+                <button type="submit" class="navi" >login</button>
+            </form>
+            <form method="get" action="/">
+                <button type="submit" class="navi" >zadania</button>
+             </form>
+            <br>
+            <p id="head">lista zadań,<br> login:</p>
+        </header>
+        <form method="post" action="/login">
+            <input type="text" name="user" required value="USER ">
+            <button type="submit" class="dodaj">Dodaj usera</button>
+        </form>
+<!--        <form method="post" action="/addUser">
+            <p2>podaj login</p2>
+            <input type="text" name="user" required value="test">
+                    <form method="post" action="/">
+            <input type="text" name="nazwa" required value="test "></input>
+            <button type="submit" class="dodaj">Dodaj</button>
+        </form>
+           <p2>podaj email</p2>
+            <input type="email" name="email" required value="test@test.pl">
+            <p2>podaj hasło</p2>
+            <input type="password" name="pass" required>
+            <br>
+
+            <button type="submit" class="dodaj" >rejestruj</button>
+            <br>    
+        </form>
+
+        <form method="get" action="/">
+            <button type="submit" class="dodaj">loguj</button>
+        </form>
+-->
+        <br>
+        <form method="get" action="/">
+            <button type="submit" class="kontynuacja">kontynuuj bez logowania</button>
+        </form>
+
+
+        <footer>
+            <p>zad 5</p>
+            <p>autor: S17245</p>        
+        </footer>
+    </body>
+</html>
+

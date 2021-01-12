@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+    <head>
+        <title>formularz</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="formularz">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/css/style.css" rel="stylesheet" type="text/css">
+
+    </head>
+    <body>
+        <header>  
+            <form method="get" action="/login">
+                <button type="submit" class="navi" >login</button>
+            </form>
+            <form method="get" action="/">
+                <button type="submit" class="navi" >zadania</button>
+             </form>
+            <br>
+            <p id="head">lista zadań:<br></p>
+        </header>
+        <br>
+        
+        <form method="post" action="/">
+            <input type="text" name="nazwa" required value="test "></input>
+            <button type="submit" class="dodaj">Dodaj</button>
+        </form>
+
+        <% for (var i=0; i< tasks.length; i++) { %>
+            <div class="taskItem">
+                <div class="<%=tasks[i].zakonczone %>" id="task"> 
+                    <%=tasks[i].nazwa %>
+                </div>    
+                <div class="data">
+                    Utworzono: <%= new Intl.DateTimeFormat('pl-PL', { dateStyle: 'full', timeStyle: 'medium'}).format(tasks[i].data) %>
+                </div>
+                
+                <div>
+                    <form method="post" action="/<%= tasks[i]._id %>/zakoncz">
+                        <button class="zakoncz" type="submit" >Zakończ</button>
+                    </form>
+    
+                    <form method="post" action="/<%= tasks[i]._id %>/usun">
+                        <button class="usun" type="submit" >Usuń</button>
+                    </form>
+                </div>
+            </div>
+        <%	} %>
+             
+        <br><br>
+        <form action="/usunWszystkie" method="post">
+            <button type="submit" class="usun">Usuń wszystkie zakończone</button>
+        </form>
+
+        <footer>
+            <p>zad 5</p>
+            <p>autor: S17245</p>        
+        </footer>
+    </body>
+</html>
+

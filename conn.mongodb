@@ -1,0 +1,36 @@
+
+require('dotenv').config();
+// drop
+db.userList.drop();
+db.createCollection('userList');
+use('userList');
+
+db.userList.insert([
+  { 
+    'user' : 'test1', 
+    'email' : 'test1', 
+    'pass' : 'test1', 
+    'active' : false, 
+    'dataUtworzenia' : '2021-01-09T17:17:42.050+00:00'
+    }
+]);
+
+
+// // insert 
+// db.myToDoList.insertMany([
+//   { 
+//     'nazwa' : 'test1', 
+//     'zakonczone' : false, 
+//     'data' :  new Date('2014-03-01T08:00:00Z') 
+//     },
+//   { 
+//     'nazwa' : 'test2', 
+//     'zakonczone' : false,
+//     'data' :  new Date('2014-03-01T08:00:00Z') 
+//     },
+//   { 
+//     'nazwa' : 'test3', 
+//     'zakonczone' : false, 
+//     'data' :  new Date('2015-03-01T08:00:00Z') 
+//     },
+// ]);
