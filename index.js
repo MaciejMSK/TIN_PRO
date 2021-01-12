@@ -8,6 +8,10 @@ const port = 3002;
 var app = express();
 app.use(express.static(__dirname + '/public'));
 
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
+
 var mongoose = require('mongoose');
 
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true,useUnifiedTopology: true }, () => {
@@ -16,6 +20,7 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true,useUnifiedTopol
 	console.log("test serwera: http://localhost:" + port + "/hello");
 	console.log("link do listy zadań: http://localhost:" + port + "/");
 	console.log("link do login Page: http://localhost:" + port + "/login");
+	console.log("link do login Page: http://localhost:" + port + "/register");
 });
 
 var schema = mongoose.Schema({
@@ -26,8 +31,8 @@ var schema = mongoose.Schema({
 
 var userSchema = mongoose.Schema({
 	user:{type:String, required:true},
-	//email:{type:String, required:true},
-	//pass:{type:String, required:true},
+	email:{type:String, required:true},
+	pass:{type:String, required:true},
 	active:{type:Boolean, default:false},
 	dataUtworzenia:{type:Date, default:Date.now}
 }); 
@@ -45,16 +50,36 @@ app.get('/login', function(req, res) {
 	console.log('Login Page');				  
 });
 
+// pokaż register page
+app.get('/register', function(req, res) {
+	res.render('register');
+	console.log('Register Page');				  
+});
+
+// dodaj usera
+app.post('/addUser', function(req, res) {
+	var newUser = new userModel();
+	newUser.user = req.body.user;
+	newUser.pass = req.body.pass;
+	newUser.email = req.body.email;
+	newUser.save();
+	res.redirect('/login');
+	console.log('user dodany');
+});
+
+// login TBD
+
+
 // dodaj usera
 app.post('/login', function(req, res) {
-	var zadanie = new userModel();
-	console.log("przed "+ req.body) ;
-	zadanie.user = req.body.user;
+	var newUser = new userModel();
+	newUser.user = req.body.user;
 	console.log("po " + req.body) ;
-	zadanie.save();
+	newUser.save();
 	res.redirect('/');
 	console.log('user dodany');
 });
+
 
 // pokaż tasks
 app.get('/', function(req, res) {
@@ -65,11 +90,7 @@ app.get('/', function(req, res) {
 	});					  
 });
 
-var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json())
-
-// dodaj
+// dodaj zadanie
 app.post('/', function(req, res) {
 	var zadanie = new task();
 	zadanie.nazwa = req.body.nazwa
