@@ -80,7 +80,7 @@ app.post('/login', function(req, res) {
 			// return {...user.toJSON(),token
 			// };
 		}else{
-			// alert("login albo hasło jest niepoprawne");
+			alert("login albo hasło jest niepoprawne");
 			console.log("err",err);
 		}
 	});
@@ -89,7 +89,7 @@ app.post('/login', function(req, res) {
 // dodaj usera
 app.post('/addUser', function(req, res) {
 	
-	// var userName = req.body.user;
+	
 	var newUser = new userModel();
 	newUser.user = req.body.user;
 	//newUser.pass = req.body.pass
@@ -99,8 +99,7 @@ app.post('/addUser', function(req, res) {
 	res.redirect('/loginPage');
 	console.log('user dodany');
 
-	// var userName = req.body.user;
-
+	
 	// userModel.findOne(userName, (err,user) => {
 	// 	if(userName==user.user){
 	// 		alert("user zajęty");
@@ -128,7 +127,7 @@ app.post('/:id/edytuj', function(req, res) {
 			if (tasks) {
 				tasks.nazwa = req.body.nazwa;
 				tasks.save();
-				res.redirect('/');
+				res.redirect('/?login=true');
 				console.log('edycja');
 			}else{
 				alert("nie można edytować");
@@ -142,7 +141,7 @@ app.post('/', function(req, res) {
 	var zadanie = new task();
 	zadanie.nazwa = req.body.nazwa;
 	zadanie.save();
-	res.redirect('/');
+	res.redirect('/?login=true');
 	console.log('dodaj task');
 });
 
@@ -150,7 +149,7 @@ app.post('/', function(req, res) {
 app.post('/:id/usun', function(req, res) {
 	task.deleteOne({_id: req.params.id}, (err, tasks)=>
 		{
-			res.redirect('/')
+			res.redirect('/?login=true')
 			console.log('usuń');
 			if (err) return console.log(err);
 		});
@@ -160,7 +159,7 @@ app.post('/:id/usun', function(req, res) {
 app.post('/usunWszystkie', function(req, res) {
 	task.deleteMany({'zakonczone':true}, (err, tasks)=>
 		{
-			res.redirect('/')
+			res.redirect('/?login=true')
 			console.log('usuńWszystkie');
 			if (err) return console.log(err);
 		});
@@ -173,7 +172,7 @@ app.post('/:id/zakoncz', function(req, res) {
 			tasks.zakonczone = true;
 			tasks.save();
 			setTimeout(() => {  console.log("wait!"); }, 2000);
-			res.redirect('/')
+			res.redirect('/?login=true')
 			console.log('zakoncz');
 			if (err) return console.log(err);
 		});
