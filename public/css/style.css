@@ -6,7 +6,7 @@ body {
 
 .dodaj {
     color: white; 
-    background-color: #006632;
+    background-color:#00d652b7 ;
     border-radius: 8px;
 }
 
@@ -26,6 +26,12 @@ body {
 .zakoncz {
     color: white; 
     background-color: #e48d1c;
+    border-radius: 8px;
+}
+
+.edytuj {
+    color: white; 
+    background-color: #0076d6;
     border-radius: 8px;
 }
 

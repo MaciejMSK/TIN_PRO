@@ -14,7 +14,7 @@ var app = express();
 app.use(express.static(__dirname + '/public'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json())
+// app.use(bodyParser.json())
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 
@@ -24,7 +24,7 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true,useUnifiedTopol
 	console.log("test serwera: http://localhost:" + port + "/hello");
 	console.log("link do listy zadań: http://localhost:" + port + "/");
 	console.log("link do login Page: http://localhost:" + port + "/loginPage");
-	console.log("link do login Page: http://localhost:" + port + "/register");
+	console.log("link do register Page: http://localhost:" + port + "/register");
 });
 
 var schema = mongoose.Schema({
@@ -56,39 +56,40 @@ app.get('/register', function(req, res) {
 	console.log('Register Page');				  
 });
 
-// loguj page
-app.get('/login', function(req, res) {
-	var userName = req.body.user;
-	var userPass = req.body.pass;
-
-	var foundUser = userModel.findOne(userName, (err,user) => {
-		console.log("znalezionu user + ", user);
-	});
-
-	if(userName==foundUser.user 
-		&& bcrypt.compare(userPass,foundUser.pass ) ){
-		res.redirect('/');
-	}else{
-		console.log(err);
-	}
+// pokaż tasks
+app.get('/', function(req, res) {
+	task.find({},(err, tasks)=>{
+		console.log('lista tasków');//,tasks);
+		res.render('myToDoView', {tasks:tasks || [],login:false})
+		if (err) return console.log(err);
+	});					  
 });
 
-	//const findUser = userModel.find( user {req.body.user});
-	//console.log(findUser);
+// loguj przycisk
+app.post('/login', function(req, res) {
+	var userName = req.body.user;
+	var userPass = req.body.pass;
+	console.log('userName z pola' + req.body.user);
 
-    // if (user && bcrypt.compareSync(req.body.pass, user.pass)) {
-    //     const token = jwt.sign({ sub: user.id }, process.env.SECRET, { expiresIn: '7d' });
-    //     return {
-    //         ...user.toJSON(),
-    //         token
-    //     };
-    // }
-	//res.render('/');
-	//console.log('zalogowano');				  
-
+	userModel.findOne({'user':userName}, (err,user) => {
+		if(userName==user.user 
+			&& bcrypt.compare(userPass,user.pass) ){
+			res.redirect('/?login=true');
+			console.log("przycisk loguj dla usera: ", user);
+			// const token = jwt.sign({ sub: user.id }, process.env.SECRET, { expiresIn: '1d' });
+			// return {...user.toJSON(),token
+			// };
+		}else{
+			// alert("login albo hasło jest niepoprawne");
+			console.log("err",err);
+		}
+	});
+});
 
 // dodaj usera
 app.post('/addUser', function(req, res) {
+	
+	// var userName = req.body.user;
 	var newUser = new userModel();
 	newUser.user = req.body.user;
 	//newUser.pass = req.body.pass
@@ -97,32 +98,49 @@ app.post('/addUser', function(req, res) {
 	newUser.save();
 	res.redirect('/loginPage');
 	console.log('user dodany');
+
+	// var userName = req.body.user;
+
+	// userModel.findOne(userName, (err,user) => {
+	// 	if(userName==user.user){
+	// 		alert("user zajęty");
+	// 	}else{
+	// 		var newUser = new userModel();
+	// 		newUser.user = req.body.user;
+	// 		//newUser.pass = req.body.pass
+	// 		newUser.pass = bcrypt.hashSync(req.body.pass, 10);
+	// 		newUser.email = req.body.email;
+	// 		newUser.save();
+	// 		res.redirect('/loginPage');
+	// 		console.log('user dodany');
+	// 	}
+	// 	//############
+	// 	console.log("dodano usera + ", user);
+	//});
+
+
 });
 
-// dodaj usera
-// app.post('/login', function(req, res) {
-// 	var newUser = new userModel();
-// 	newUser.user = req.body.user;
-// 	console.log("po " + req.body) ;
-// 	newUser.save();
-// 	res.redirect('/');
-// 	console.log('user dodany');
-// });
-
-
-// pokaż tasks
-app.get('/', function(req, res) {
-	task.find({},(err, tasks)=>{
-		console.log('lista tasków');//,tasks);
-		res.render('myToDoView', {tasks:tasks || [] })
-		if (err) return console.log(err);
-	});					  
+// edytuj
+app.post('/:id/edytuj', function(req, res) {
+	task.findById({_id: req.params.id}, (err, tasks)=>
+		{
+			if (tasks) {
+				tasks.nazwa = req.body.nazwa;
+				tasks.save();
+				res.redirect('/');
+				console.log('edycja');
+			}else{
+				alert("nie można edytować");
+				console.log(err);
+			}
+		});
 });
 
 // dodaj zadanie
 app.post('/', function(req, res) {
 	var zadanie = new task();
-	zadanie.nazwa = req.body.nazwa
+	zadanie.nazwa = req.body.nazwa;
 	zadanie.save();
 	res.redirect('/');
 	console.log('dodaj task');
