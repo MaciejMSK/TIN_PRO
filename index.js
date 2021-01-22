@@ -30,7 +30,8 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true,useUnifiedTopol
 var schema = mongoose.Schema({
 	nazwa:{type:String, required:true},
 	zakonczone:{type:Boolean, default:false},
-	data:{type:Date, default:Date.now}
+	data:{type:Date, default:Date.now},
+	tags:[{type: mongoose.Schema.Types.ObjectId,ref:"Tag"}]
 }); 
 
 var userSchema = mongoose.Schema({
@@ -38,16 +39,22 @@ var userSchema = mongoose.Schema({
 	email:{type:String, required:true},
 	pass:{type:String, required:true},
 	active:{type:Boolean, default:false},
-	dataUtworzenia:{type:Date, default:Date.now}
+	dataUtworzenia:{type:Date, default:Date.now},
+}); 
+
+var tagSchema = mongoose.Schema({
+	nazwa:{type:String, required:true},
+	tasks:[{type:String, required:true,ref:"schema"}]
 }); 
 
 var task = mongoose.model('myToDoList',schema);
 var userModel = mongoose.model('userList',userSchema);
+var tags = mongoose.model('tagList', tagSchema);
 
 // pokaż login page
 app.get('/loginPage', function(req, res) {
 	res.render('loginPage');
-	console.log('Login Page');				  
+	//console.log('Login Page');				  
 });
 
 // pokaż register page
@@ -59,9 +66,13 @@ app.get('/register', function(req, res) {
 // pokaż tasks
 app.get('/', function(req, res) {
 	task.find({},(err, tasks)=>{
-		console.log('lista tasków');//,tasks);
-		res.render('myToDoView', {tasks:tasks || [],login:false})
-		if (err) return console.log(err);
+		//console.log('lista tasków');//,tasks);
+		tags.find({},(err2, tags)=>{
+			res.render('myToDoView', {tasks:tasks || [],tags:tags || [],login:false})
+			if (err) return console.log('tags err ' + err2);
+		});	
+		
+		if (err) return console.log('tasks err ' + err);
 	});					  
 });
 
@@ -69,27 +80,21 @@ app.get('/', function(req, res) {
 app.post('/login', function(req, res) {
 	var userName = req.body.user;
 	var userPass = req.body.pass;
-	console.log('userName z pola' + req.body.user);
+	//console.log('userName z pola' + req.body.user);
 
 	userModel.findOne({'user':userName}, (err,user) => {
 		if(userName==user.user 
 			&& bcrypt.compare(userPass,user.pass) ){
 			res.redirect('/?login=true');
-			console.log("przycisk loguj dla usera: ", user);
-			// const token = jwt.sign({ sub: user.id }, process.env.SECRET, { expiresIn: '1d' });
-			// return {...user.toJSON(),token
-			// };
+			//console.log("przycisk loguj dla usera: ", user);
 		}else{
 			alert("login albo hasło jest niepoprawne");
 			console.log("err",err);
 		}
 	});
 });
-
 // dodaj usera
 app.post('/addUser', function(req, res) {
-	
-	
 	var newUser = new userModel();
 	newUser.user = req.body.user;
 	//newUser.pass = req.body.pass
@@ -98,26 +103,6 @@ app.post('/addUser', function(req, res) {
 	newUser.save();
 	res.redirect('/loginPage');
 	console.log('user dodany');
-
-	
-	// userModel.findOne(userName, (err,user) => {
-	// 	if(userName==user.user){
-	// 		alert("user zajęty");
-	// 	}else{
-	// 		var newUser = new userModel();
-	// 		newUser.user = req.body.user;
-	// 		//newUser.pass = req.body.pass
-	// 		newUser.pass = bcrypt.hashSync(req.body.pass, 10);
-	// 		newUser.email = req.body.email;
-	// 		newUser.save();
-	// 		res.redirect('/loginPage');
-	// 		console.log('user dodany');
-	// 	}
-	// 	//############
-	// 	console.log("dodano usera + ", user);
-	//});
-
-
 });
 
 // edytuj
@@ -145,7 +130,7 @@ app.post('/', function(req, res) {
 	console.log('dodaj task');
 });
 
-// usuń
+// usuń zadanie
 app.post('/:id/usun', function(req, res) {
 	task.deleteOne({_id: req.params.id}, (err, tasks)=>
 		{
@@ -155,7 +140,7 @@ app.post('/:id/usun', function(req, res) {
 		});
 });
 
-// usuń zakończone
+// usuń zakończone zadanie
 app.post('/usunWszystkie', function(req, res) {
 	task.deleteMany({'zakonczone':true}, (err, tasks)=>
 		{
@@ -176,6 +161,19 @@ app.post('/:id/zakoncz', function(req, res) {
 			console.log('zakoncz');
 			if (err) return console.log(err);
 		});
+});
+
+// dotaj tag
+app.post('/dodajTag', function(req, res) {
+	tags.findById({_id: req.params.id}, (err, tasks)=>
+	{
+		var newTag = new tags();
+		newTag.nazwa = req.body.nazwa;
+		console.log('newTag');
+		newTag.save();
+		res.redirect('/?login=true');
+	});
+		  
 });
 
 // test serwera
